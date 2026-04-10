@@ -8,13 +8,25 @@ for AI coding agents (Claude Code or similar) contributing to this project.
 **All commits made by an AI agent must use the author `Claude <noreply@anthropic.com>`.**
 
 ```bash
-git commit --author="Claude <noreply@anthropic.com>" -m "..."
-# or amend an existing commit:
-git commit --amend --author="Claude <noreply@anthropic.com>" --no-edit
+GIT_COMMITTER_NAME="Claude" GIT_COMMITTER_EMAIL="noreply@anthropic.com" \
+  git commit --author="Claude <noreply@anthropic.com>" -m "..."
 ```
 
-The project owner's corporate git identity (`amoravanszky@nvidia.com`) must
-not appear in AI-generated commits.
+Both the **author** and **committer** fields must be set. `--author` alone only
+sets the author; the committer defaults to the active git identity
+(currently `JohnTwenty` for repos under `~/github/JohnTwenty/`). GitHub shows
+"X authored and Y committed" whenever the two differ.
+
+To rewrite existing commits if the committer is wrong:
+```bash
+GIT_COMMITTER_NAME="Claude" GIT_COMMITTER_EMAIL="noreply@anthropic.com" \
+  git rebase --root --exec \
+  'GIT_COMMITTER_NAME="Claude" GIT_COMMITTER_EMAIL="noreply@anthropic.com" \
+   git commit --amend --no-edit --author="Claude <noreply@anthropic.com>"'
+```
+
+Neither the corporate identity (`amoravanszky@nvidia.com`) nor the project
+owner identity (`JohnTwenty`) should appear in AI-generated commits.
 
 ---
 
