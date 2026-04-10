@@ -51,6 +51,23 @@ The submodule (`third-party/ovrtx`, pinned to v0.2.0) provides two things:
 - The cmake module that auto-downloads the ovrtx pre-built binary at configure time.
 - The Vulkan/CUDA helper sources shared with the `vulkan-interop` example.
 
+## Getting ovrtx (normally automatic)
+
+The cmake configure step downloads the ovrtx pre-built binary from GitHub
+Releases automatically into `_deps/`. No manual step is needed if your
+machine can reach `github.com`.
+
+**If the download is blocked** (corporate proxy, air-gap network): download
+the zip manually from the
+[ovrtx releases page](https://github.com/NVIDIA-Omniverse/ovrtx/releases/tag/v0.2.0),
+extract it, and pass the path with `-DOVRTX_DIR=...` (see below).
+
+| Platform | Package filename |
+|---|---|
+| Linux x86_64 | `ovrtx@0.2.0.manylinux_2_35_x86_64.zip` |
+| Linux aarch64 | `ovrtx@0.2.0.manylinux_2_35_aarch64.zip` |
+| Windows x86_64 | `ovrtx@0.2.0.windows-x86_64.zip` |
+
 ## Building
 
 ### Linux
@@ -69,9 +86,30 @@ cmake -B build `
 cmake --build build --config Release
 ```
 
-The first configure downloads the ovrtx binary and other dependencies
-(glfw3, glm, volk, unordered_dense) into `_deps/`. Subsequent builds
-are fully offline.
+### Offline / behind a proxy
+
+Pass both package paths so cmake never attempts a network download:
+
+```bash
+cmake -B build \
+    -DCMAKE_PREFIX_PATH=/path/to/ovphysx-linux-x86_64-0.2.8/ovphysx \
+    -DOVRTX_DIR=/path/to/ovrtx@0.2.0.manylinux_2_35_x86_64
+cmake --build build --parallel
+```
+
+On Windows:
+```powershell
+cmake -B build `
+    -DCMAKE_PREFIX_PATH="C:\local\ovphysx-windows-x86_64-0.2.8\ovphysx" `
+    -DOVRTX_DIR="C:\local\ovrtx@0.2.0.windows-x86_64"
+cmake --build build --config Release
+```
+
+`-DOVRTX_DIR` tells cmake where to find the pre-extracted ovrtx package.
+`ovrtx_fetch()` detects it via `find_package` and skips the download.
+Other dependencies (glfw3, glm, volk, unordered_dense) are fetched from
+GitHub at configure time; if those are also blocked, install them via your
+system package manager or vcpkg and cmake will find them automatically.
 
 ## Running
 

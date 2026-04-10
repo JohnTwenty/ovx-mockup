@@ -42,7 +42,17 @@ set(FETCHCONTENT_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}/_deps" CACHE PATH
 # ============================================================
 # ovrtx - cmake module lives in the submodule; it downloads the
 # pre-built binary from GitHub Releases automatically.
+#
+# If the download is blocked (corporate proxy, air-gap), extract the
+# pre-built zip manually and pass its path:
+#   cmake -B build -DOVRTX_DIR=/path/to/ovrtx@0.2.0.manylinux_2_35_x86_64
+# ovrtx_fetch() will find_package() first and skip the download.
 # ============================================================
+if(DEFINED OVRTX_DIR)
+    list(APPEND CMAKE_PREFIX_PATH "${OVRTX_DIR}")
+    message(STATUS "Using local ovrtx package: ${OVRTX_DIR}")
+endif()
+
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/third-party/ovrtx/examples/c/cmake")
 include(ovrtx)

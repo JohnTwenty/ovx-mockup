@@ -68,6 +68,14 @@ submodule pin and retest.
   the future, model it after `ovrtx.cmake` with platform-specific URLs and
   SHA256 hashes.
 
+### ovrtx offline / proxy environments
+
+`ovrtx_fetch()` calls `find_package(ovrtx QUIET)` before attempting any
+download. If the user pre-extracts the ovrtx zip and passes its path via
+`-DOVRTX_DIR=`, `CMakeLists.txt` prepends that to `CMAKE_PREFIX_PATH` before
+calling `ovrtx_fetch()`, so the download is skipped entirely. No changes to
+the submodule's cmake module are needed to support this.
+
 ### FetchContent cache location
 
 `FETCHCONTENT_BASE_DIR` is set to `${PROJECT_ROOT}/_deps` *before*
