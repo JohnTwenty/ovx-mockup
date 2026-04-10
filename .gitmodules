@@ -1,0 +1,4 @@
+[submodule "third-party/ovrtx"]
+	path = third-party/ovrtx
+	url = https://github.com/NVIDIA-Omniverse/ovrtx.git
+	shallow = true
